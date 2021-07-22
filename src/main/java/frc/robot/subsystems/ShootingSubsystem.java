@@ -18,6 +18,8 @@ import java.util.function.Supplier;
 
 public class ShootingSubsystem extends GenericSubsystem {
 
+    private static ShootingSubsystem instance = new ShootingSubsystem();
+
     public static final double distancePerPulse = 10 / 4096.0;
     private static RootNamespace shooterNamespace = new RootNamespace("shooter");
     private static Namespace PID = shooterNamespace.addChild("PID");
@@ -53,6 +55,10 @@ public class ShootingSubsystem extends GenericSubsystem {
                 new ExponentialFilter(0.05));
     }
 
+    public static ShootingSubsystem getInstance() {
+        return instance;
+    }
+
     @Override
     public void apply(double speed) {
         master.set(speed);
@@ -81,7 +87,7 @@ public class ShootingSubsystem extends GenericSubsystem {
     public void configureDashboard() {
         shooterNamespace.putNumber("shooter velocity - filtered", noiseReducer);
         shooterNamespace.putNumber("shooter velocity", () ->
-                (double) master.getSelectedSensorVelocity() * distancePerPulse);
+                master.getSelectedSensorVelocity() * distancePerPulse);
         shooterNamespace.putData("shoot", new MoveGenericSubsystem(this, shootSpeed));
         shooterNamespace.putData("pid shoot",
                 new MoveGenericSubsystemWithPID(this, targetSpeed, this::getMotorSpeed, velocityPIDSettings));
