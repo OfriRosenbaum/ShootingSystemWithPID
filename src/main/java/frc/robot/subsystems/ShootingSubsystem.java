@@ -19,7 +19,6 @@ import java.util.function.Supplier;
 public class ShootingSubsystem extends GenericSubsystem {
 
     private static ShootingSubsystem instance = new ShootingSubsystem();
-
     public static final double distancePerPulse = 10 / 4096.0;
     private static RootNamespace shooterNamespace = new RootNamespace("shooter");
     private static Namespace PID = shooterNamespace.addChild("PID");
