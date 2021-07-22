@@ -39,13 +39,14 @@ public class ShootingSubsystem extends GenericSubsystem {
     private WPI_TalonSRX master;
     private WPI_VictorSPX slave;
     private NoiseReducer noiseReducer;
+    private TalonEncoder encoder;
 
     private ShootingSubsystem() {
         super(minSpeed, maxSpeed);
         master = new WPI_TalonSRX(RobotMap.CAN.SHOOTER_MASTER);
         slave = new WPI_VictorSPX(RobotMap.CAN.SHOOTER_SLAVE);
 //        master.setNeutralMode(NeutralMode.Brake);
-        TalonEncoder encoder = new TalonEncoder(master);
+        encoder = new TalonEncoder(master);
 //        master.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
         master.setInverted(true);
 //        slave.setNeutralMode(NeutralMode.Brake);
@@ -85,8 +86,7 @@ public class ShootingSubsystem extends GenericSubsystem {
     @Override
     public void configureDashboard() {
         shooterNamespace.putNumber("shooter velocity - filtered", noiseReducer);
-        shooterNamespace.putNumber("shooter velocity", () ->
-                master.getSelectedSensorVelocity() * distancePerPulse);
+        shooterNamespace.putNumber("shooter velocity", () -> encoder.getVelocity() * distancePerPulse);
         shooterNamespace.putData("shoot", new MoveGenericSubsystem(this, shootSpeed));
         shooterNamespace.putData("pid shoot",
                 new MoveGenericSubsystemWithPID(this, targetSpeed, this::getMotorSpeed, velocityPIDSettings));
