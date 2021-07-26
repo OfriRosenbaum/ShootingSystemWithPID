@@ -44,7 +44,7 @@ public class ShootingSubsystem extends GenericSubsystem {
         master = new WPI_TalonSRX(RobotMap.CAN.SHOOTER_MASTER);
         slave = new WPI_VictorSPX(RobotMap.CAN.SHOOTER_SLAVE);
 //        master.setNeutralMode(NeutralMode.Brake);
-        encoder = new TalonEncoder(master);
+        encoder = new TalonEncoder(master, distancePerPulse);
 //        master.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
         master.setInverted(true);
 //        slave.setNeutralMode(NeutralMode.Brake);
