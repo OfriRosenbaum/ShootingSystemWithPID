@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.spikes2212.command.genericsubsystem.GenericSubsystem;
@@ -51,8 +49,7 @@ public class ShootingSubsystem extends GenericSubsystem {
         master.setInverted(true);
 //        slave.setNeutralMode(NeutralMode.Brake);
         slave.follow(master);
-        noiseReducer = new NoiseReducer(() -> encoder.getVelocity() * distancePerPulse,
-                new ExponentialFilter(0.05));
+        noiseReducer = new NoiseReducer(encoder::getVelocity, new ExponentialFilter(0.05));
     }
 
     public static ShootingSubsystem getInstance() {
@@ -86,13 +83,9 @@ public class ShootingSubsystem extends GenericSubsystem {
     @Override
     public void configureDashboard() {
         shooterNamespace.putNumber("shooter velocity - filtered", noiseReducer);
-        shooterNamespace.putNumber("shooter velocity", () -> encoder.getVelocity() * distancePerPulse);
+        shooterNamespace.putNumber("shooter velocity", () -> encoder.getVelocity());
         shooterNamespace.putData("shoot", new MoveGenericSubsystem(this, shootSpeed));
         shooterNamespace.putData("pid shoot",
                 new MoveGenericSubsystemWithPID(this, targetSpeed, this::getMotorSpeed, velocityPIDSettings));
-    }
-
-    public void setAccelerated(boolean isAccelerated) {
-        shooterNamespace.putBoolean("is accelerated", isAccelerated);
     }
 }
