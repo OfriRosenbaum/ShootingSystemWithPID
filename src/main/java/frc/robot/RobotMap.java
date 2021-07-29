@@ -4,9 +4,8 @@ public class RobotMap {
 
     public interface CAN {
 
-        int PCM = 0;
-        int SHOOTER_MASTER = 1;
-        int SHOOTER_SLAVE = 2;
+        int SHOOTER_MASTER = 5;
+        int SHOOTER_SLAVE = 6;
     }
 }
 
